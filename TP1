@@ -1,0 +1,188 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Noeud {
+    int valeur;
+    struct Noeud *suivant;
+} Noeud;
+
+Noeud *cree(int _value) {
+    Noeud *NV = (Noeud *)malloc(sizeof(Noeud));
+    NV->valeur = _value;
+    NV->suivant = NULL;
+    return NV;
+}
+
+void affiche(Noeud *debut) {
+    Noeud *courant = debut;
+    while (courant != NULL) {
+        printf("La valeur est: %d \n", courant->valeur);
+        courant = courant->suivant;
+    }
+}
+
+Noeud *ajouterD(Noeud *debut, int _value) {
+    Noeud *NV = (Noeud *)malloc(sizeof(Noeud));
+    NV->valeur = _value;
+    NV->suivant = debut;
+    return NV;
+}
+
+Noeud *ajouterF(Noeud *debut, int _valeur) {
+    Noeud *NV = (Noeud *)malloc(sizeof(Noeud));
+    NV->valeur = _valeur;
+    NV->suivant = NULL;
+    if (debut == NULL)
+     return NV;
+    Noeud *courant = debut;
+    while (courant->suivant != NULL) {
+        courant = courant->suivant;
+    }
+    courant->suivant = NV;
+    return debut;
+}
+
+void rechercher(Noeud *debut, int _valeur) {
+    Noeud *courant = debut;
+    while (courant != NULL) {
+        if (courant->valeur == _valeur) {
+            printf("La valeur existe \n");
+            return;
+        }
+        courant = courant->suivant;
+    }
+    printf("La valeur est introuvable \n");
+}
+
+int taille(Noeud *debut) {
+    int taille = 0;
+    Noeud *courant = debut;
+    while (courant != NULL) {
+        taille++;
+        courant = courant->suivant;
+    }
+    return taille;
+}
+
+Noeud *insertion(Noeud *debut, int pos, int val) {
+    Noeud *NV = (Noeud *)malloc(sizeof(Noeud));
+    NV->valeur = val;
+    NV->suivant = NULL;
+    int size = taille(debut);
+    if (pos < 1 || pos > size + 1) {
+        printf("La position est invalide \n");
+        return debut;
+    }
+    if (pos == 1) {
+        NV->suivant = debut;
+        return NV;
+    }
+    Noeud *courant = debut;
+    for (int i = 1; i < pos - 1; i++) {
+        courant = courant->suivant;
+    }
+    NV->suivant = courant->suivant;
+    courant->suivant = NV;
+    return debut;
+}
+
+Noeud *suppressionD(Noeud *debut) {
+    if (debut == NULL) {
+        printf("La liste est vide \n");
+        return NULL;
+    }
+    Noeud *tmp = debut;
+    debut = debut->suivant;
+    free(tmp);
+    return debut;
+}
+
+Noeud *suppressionF(Noeud *debut) {
+    if (debut == NULL) {
+        printf("La liste est vide \n");
+        return NULL;
+    }
+    if (debut->suivant == NULL) {
+        free(debut);
+        return NULL;
+    }
+    Noeud *courant = debut;
+    while (courant->suivant->suivant != NULL) {
+        courant = courant->suivant;
+    }
+    free(courant->suivant);
+    courant->suivant = NULL;
+    return debut;
+}
+
+Noeud *suppressionP(Noeud *debut, int pos) {
+    if (debut == NULL) {
+        printf("la liste est vide \n");
+        return NULL;
+    }
+    int size = taille(debut);
+    if (pos < 1 || pos > size) {
+        printf("la position est invalide \n");
+        return debut;
+    }
+    if (pos == 1) {
+        return suppressionD(debut);
+    }
+    Noeud *courant = debut;
+    for (int i = 1; i < pos - 1; i++) {
+        courant = courant->suivant;
+    }
+    Noeud *tmp = courant->suivant;
+    courant->suivant = tmp->suivant;
+    free(tmp);
+    return debut;
+}
+
+Noeud *modifierD(Noeud *debut, int _valeur) {
+    if (debut != NULL)
+     debut->valeur = _valeur;
+    return debut;
+}
+
+Noeud *modifierF(Noeud *debut, int _valeur) {
+    if (debut == NULL) {
+        printf("la liste est vide \n");
+        return NULL;
+    }
+    Noeud *courant = debut;
+    while (courant->suivant != NULL) {
+        courant = courant->suivant;
+    }
+    courant->valeur = _valeur;
+    return debut;
+}
+
+Noeud *modifierP(Noeud *debut, int pos, int _valeur) {
+    int size = taille(debut);
+    if (pos < 1 || pos > size) {
+        printf("La position est invalide \n");
+        return debut;
+    }
+    Noeud *courant = debut;
+    for (int i = 1; i < pos; i++) {
+        courant = courant->suivant;
+    }
+    courant->valeur = _valeur;
+    return debut;
+}
+
+
+
+int main() {
+
+    Noeud *debut = NULL;
+    debut = ajouterD(debut, 10);
+    debut = ajouterD(debut, 20);
+    debut = ajouterF(debut, 30);
+    affiche(debut);
+
+
+
+
+    return 0;
+}
