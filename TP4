@@ -2,178 +2,194 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 typedef struct Etudiant {
-    int id;
+    int ID;
     char nom[50];
     float moyenne;
     struct Etudiant* suivant;
     struct Etudiant* precedent;
 } Etudiant;
 
+
+
 Etudiant* creer_etudiant() {
-    Etudiant* nouveau = (Etudiant*)malloc(sizeof(Etudiant));
-    if (nouveau == NULL) {
-        printf("Erreur d'allocation mémoire.\n");
+    Etudiant* nv = (Etudiant*)malloc(sizeof(Etudiant));
+    if (nv == NULL) {
         return NULL;
     }
 
-    printf("Saisir l'ID de l'étudiant : ");
-    scanf("%d", &nouveau->id);
+    printf("Veuillez entrer l'ID: ");
+    scanf("%d", &nv->ID);
     getchar();
-    printf("Saisir le nom de l'étudiant : ");
-    scanf("%s", nouveau->nom);
-    printf("Saisir la moyenne de l'étudiant : ");
-    scanf("%f", &nouveau->moyenne);
+    printf("Veuillez entrer le nom: ");
+    scanf("%s", nv->nom);
+    printf("Veuillez entrer la moyenne: ");
+    scanf("%f", &nv->moyenne);
 
-    nouveau->suivant = NULL;
-    nouveau->precedent = NULL;
+    nv->suivant = NULL;
+    nv->precedent = NULL;
 
-    return nouveau;
+    return nv;
 }
 
-Etudiant* ajouter_position(Etudiant* tete, Etudiant* nouveau, int position) {
+
+
+Etudiant* ajouter_position(Etudiant* tete, Etudiant* nv, int position) {
     if (position < 1) {
-        printf("Position invalide.\n");
+        printf("Position invalide");
         return tete;
     }
 
     if (position == 1) {
-        nouveau->suivant = tete;
+        nv->suivant = tete;
         if (tete != NULL) {
-            tete->precedent = nouveau;
+            tete->precedent = nv;
         }
-        return nouveau;
+        return nv;
     }
 
-    Etudiant* temp = tete;
+    Etudiant* courant = tete;
     int i = 1;
-    while (temp != NULL && i < position - 1) {
-        temp = temp->suivant;
+    while (courant != NULL && i < position - 1) {
+        courant = courant->suivant;
         i++;
     }
 
-    if (temp == NULL) {
-        printf("Position en dehors de la liste.\n");
+    if (courant == NULL) {
         return tete;
     }
 
-    nouveau->suivant = temp->suivant;
-    nouveau->precedent = temp;
-    if (temp->suivant != NULL) {
-        temp->suivant->precedent = nouveau;
+    nv->suivant = courant->suivant;
+    nv->precedent = courant;
+    if (courant->suivant != NULL) {
+        courant->suivant->precedent = nv;
     }
-    temp->suivant = nouveau;
+    courant->suivant = nv;
 
     return tete;
 }
+
+
 
 Etudiant* supprimer_position(Etudiant* tete, int position) {
     if (position < 1) {
-        printf("Position invalide.\n");
+        printf("Position invalide");
         return tete;
     }
 
-    Etudiant* temp = tete;
+    Etudiant* courant = tete;
     int i = 1;
-    while (temp != NULL && i < position) {
-        temp = temp->suivant;
+    while (courant != NULL && i < position) {
+        courant = courant->suivant;
         i++;
     }
 
-    if (temp == NULL) {
-        printf("Position en dehors de la liste.\n");
+    if (courant == NULL) {
         return tete;
     }
 
-    if (temp->precedent != NULL) {
-        temp->precedent->suivant = temp->suivant;
+    if (courant->precedent != NULL) {
+        courant->precedent->suivant = courant->suivant;
     } else {
-        tete = temp->suivant;
+        tete = courant->suivant;
     }
 
-    if (temp->suivant != NULL) {
-        temp->suivant->precedent = temp->precedent;
+    if (courant->suivant != NULL) {
+        courant->suivant->precedent = courant->precedent;
     }
 
-    free(temp);
+    free(courant);
     return tete;
 }
 
+
+
 void afficher_liste(Etudiant* tete) {
-    Etudiant* temp = tete;
-    while (temp != NULL) {
-        printf("ID: %d, Nom: %s, Moyenne: %.2f\n", temp->id, temp->nom, temp->moyenne);
-        temp = temp->suivant;
+    Etudiant* courant = tete;
+    while (courant != NULL) {
+        printf("%d, %s, %.2f", courant->ID, courant->nom, courant->moyenne);
+        courant = courant->suivant;
     }
 }
+
+
 
 Etudiant* derniere_cellule(Etudiant* tete) {
-    Etudiant* temp = tete;
-    while (temp != NULL && temp->suivant != NULL) {
-        temp = temp->suivant;
+    Etudiant* courant = tete;
+    while (courant != NULL && courant->suivant != NULL) {
+        courant = courant->suivant;
     }
-    return temp;
+    return courant;
 }
+
+
 
 void afficher_liste_inverse(Etudiant* dernier) {
-    Etudiant* temp = dernier;
-    while (temp != NULL) {
-        printf("ID: %d, Nom: %s, Moyenne: %.2f\n", temp->id, temp->nom, temp->moyenne);
-        temp = temp->precedent;
+    Etudiant* courant = dernier;
+    while (courant != NULL) {
+        printf("%d, %s, %.2f", courant->ID, courant->nom, courant->moyenne);
+        courant = courant->precedent;
     }
 }
 
+
+
 int chercher_etudiant(Etudiant* tete, int id) {
-    Etudiant* temp = tete;
-    while (temp != NULL) {
-        if (temp->id == id) {
-            return 1;
+    Etudiant* courant = tete;
+    while (courant != NULL) {
+        if (courant->ID == id) {
+            printf("Étudiant trouvé");
         }
-        temp = temp->suivant;
+        courant = courant->suivant;
     }
     return 0;
 }
 
+
+
 void separer_par_moyenne(Etudiant* tete, Etudiant** liste_mention, Etudiant** liste_non_mention) {
-    Etudiant* temp = tete;
-    while (temp != NULL) {
-        Etudiant* nouveau = (Etudiant*)malloc(sizeof(Etudiant));
-        if (nouveau == NULL) {
-            printf("Erreur d'allocation mémoire.\n");
+    Etudiant* courant = tete;
+    while (courant != NULL) {
+        Etudiant* nv = (Etudiant*)malloc(sizeof(Etudiant));
+        if (nv == NULL) {
             return;
         }
-        nouveau->id = temp->id;
-        strcpy(nouveau->nom, temp->nom);
-        nouveau->moyenne = temp->moyenne;
-        nouveau->suivant = NULL;
-        nouveau->precedent = NULL;
+        nv->ID = courant->ID;
+        strcpy(nv->nom, courant->nom);
+        nv->moyenne = courant->moyenne;
+        nv->suivant = NULL;
+        nv->precedent = NULL;
 
-        if (temp->moyenne >= 10) {
-            *liste_mention = ajouter_position(*liste_mention, nouveau, 1);
+        if (courant->moyenne >= 10) {
+            *liste_mention = ajouter_position(*liste_mention, nv, 1);
         } else {
-            *liste_non_mention = ajouter_position(*liste_non_mention, nouveau, 1);
+            *liste_non_mention = ajouter_position(*liste_non_mention, nv, 1);
         }
 
-        temp = temp->suivant;
+        courant = courant->suivant;
     }
 }
 
+
+
+
 int main() {
+
     Etudiant* tete = NULL;
     Etudiant* liste_mention = NULL;
     Etudiant* liste_non_mention = NULL;
     int choix, position, id;
 
     do {
-        printf("\nMenu de gestion des etudiants :\n");
-        printf("1. Ajouter un etudiant\n");
-        printf("2. Afficher la liste des etudiants\n");
-        printf("3. Ajouter un etudiant à une position donnée\n");
-        printf("4. Supprimer un etudiant d'une position donnée\n");
-        printf("5. Rechercher un etudiant par ID\n");
-        printf("6. Afficher la liste des etudiants en sens inverse\n");
-        printf("7. Séparer les étudiants par moyenne\n");
-        printf("8. Quitter\n");
+        printf("1. Ajouter un etudiant");
+        printf("2. Afficher la liste des etudiants");
+        printf("3. Ajouter un etudiant a une position donnee");
+        printf("4. Supprimer un etudiant d'une position donnee");
+        printf("5. Rechercher un etudiant par ID");
+        printf("6. Afficher la liste des etudiants en sens inverse");
+        printf("7. Separer les etudiants par moyenne");
+        printf("8. Quitter");
         printf("Choix : ");
         scanf("%d", &choix);
 
@@ -187,24 +203,24 @@ int main() {
                 afficher_liste(tete);
                 break;
             case 3: {
-                printf("Entrez la position à laquelle ajouter l'étudiant : ");
+                printf("Entrez la position a laquelle ajouter l'etudiant : ");
                 scanf("%d", &position);
                 Etudiant* etudiant = creer_etudiant();
                 tete = ajouter_position(tete, etudiant, position);
                 break;
             }
             case 4:
-                printf("Entrez la position à laquelle supprimer l'étudiant : ");
+                printf("Entrez la position a laquelle supprimer l'etudiant : ");
                 scanf("%d", &position);
                 tete = supprimer_position(tete, position);
                 break;
             case 5:
-                printf("Entrez l'ID de l'étudiant à rechercher : ");
+                printf("Entrez l'ID de l'etudiant a rechercher : ");
                 scanf("%d", &id);
                 if (chercher_etudiant(tete, id)) {
-                    printf("L'étudiant avec l'ID %d a été trouvé.\n", id);
+                    printf("Trouve");
                 } else {
-                    printf("L'étudiant avec l'ID %d n'a pas été trouvé.\n", id);
+                    printf("Non trouve");
                 }
                 break;
             case 6: {
@@ -214,17 +230,18 @@ int main() {
             }
             case 7:
                 separer_par_moyenne(tete, &liste_mention, &liste_non_mention);
-                printf("Etudiants avec mention :\n");
+                printf("Avec mention :");
                 afficher_liste(liste_mention);
-                printf("Etudiants sans mention :\n");
+                printf("Sans mention :");
                 afficher_liste(liste_non_mention);
                 break;
             case 8:
-                printf("Au revoir\n");
+                printf("Fin du programme");
                 break;
             default:
-                printf("Choix invalide.\n");
+                printf("Choix invalide");
         }
+
     } while (choix != 8);
 
     return 0;
