@@ -1,115 +1,136 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 typedef struct Noeud {
     int valeur;
     struct Noeud *suivant;
 } Noeud;
 
-Noeud *cree(int _value) {
-    Noeud *NV = (Noeud *)malloc(sizeof(Noeud));
-    NV->valeur = _value;
-    NV->suivant = NULL;
-    return NV;
+
+Noeud *cree(int valeur) {
+    Noeud *nv = (Noeud *) malloc(sizeof(Noeud));
+    nv->valeur = valeur;
+    nv->suivant = NULL;
+    return nv;
 }
+
 
 void affiche(Noeud *debut) {
     if (debut == NULL) {
-        printf("La liste est vide\n");
+        printf("La liste est vide");
         return;
     }
     Noeud *courant = debut;
-    printf("l'adresse de debut est %p\n", debut);
+    printf("l'adresse de debut est %p", debut);
     do {
-        printf("valeur: %d | adresse: %p | suivant: %p\n", courant->valeur, courant, courant->suivant);
+        printf("%d, %p, %p", courant->valeur, courant, courant->suivant);
         courant = courant->suivant;
     } while (courant != debut);
 }
 
+
+
 void afficheM(Noeud *debut) {
     if (debut == NULL) {
-        printf("La liste est vide.\n");
+        printf("La liste est vide");
         return;
     }
     Noeud *courant = debut;
-    printf("Liste circulaire :\n");
+    printf("Liste circulaire :");
     while (courant->suivant != debut) {
-        printf("valeur: %d | adresse: %p | suivant: %p\n", courant->valeur, courant, courant->suivant);
+        printf("%d, %p, %p", courant->valeur, courant, courant->suivant);
         courant = courant->suivant;
     }
-    printf("Valeur : %d -> (retour au début)\n", courant->valeur);
+    printf("%d");
 }
+
+
 
 Noeud *ajouterD(Noeud *debut, int val) {
-    Noeud *NV = cree(val);
+    Noeud *nv = cree(val);
     if (debut == NULL) {
-        NV->suivant = NV;
-        return NV;
-    }
-    else {
+        nv->suivant = nv;
+        return nv;
+    } else {
         Noeud *ptr = debut;
-        while (ptr->suivant != debut)
+        while (ptr->suivant != debut) {
             ptr = ptr->suivant;
-        ptr->suivant = NV;
-        NV->suivant = debut;
-        debut = NV;
+        }
+        ptr->suivant = nv;
+        nv->suivant = debut;
+        debut = nv;
         return debut;
     }
 }
+
+
 
 Noeud *ajouterF(Noeud *debut, int val) {
-    Noeud *NV = cree(val);
+    Noeud *nv = cree(val);
     if (debut == NULL) {
-        NV->suivant = NV;
-        return NV;
-    }
-    else {
+        nv->suivant = nv;
+        return nv;
+    } else {
         Noeud *ptr = debut;
-        while (ptr->suivant != debut)
+        while (ptr->suivant != debut) {
             ptr = ptr->suivant;
-        ptr->suivant = NV;
-        NV->suivant = debut;
+        }
+        ptr->suivant = nv;
+        nv->suivant = debut;
         return debut;
     }
 }
 
-int taille(Noeud* debut) {
-    int cpt = 1;
-    Noeud* ptr = debut;
+
+
+int taille(Noeud *debut) {
+    int taille = 1;
+    Noeud *ptr = debut;
     while (ptr->suivant != debut) {
-        cpt++;
+        taille++;
         ptr = ptr->suivant;
     }
-    return cpt;
+    return taille;
 }
+
+
 
 Noeud *ajouterM(Noeud *debut, int pos, int val) {
-    if (pos < 1 || pos > taille(debut)+1) {
-        printf("Position invalide\n");
+    if (pos < 1 || pos > taille(debut) + 1) {
+        printf("Position invalide");
         return debut;
     }
-    if (pos == 1) return ajouterD(debut, val);
+    if (pos == 1) {
+        return ajouterD(debut, val);
+    }
 
-    Noeud *NV = cree(val);
+    Noeud *nv = cree(val);
     Noeud *ptr = debut;
-    for (int i = 1; i < pos - 1; i++)
+    for (int i = 1; i < pos - 1; i++) {
         ptr = ptr->suivant;
+    }
 
-    NV->suivant = ptr->suivant;
-    ptr->suivant = NV;
+    nv->suivant = ptr->suivant;
+    ptr->suivant = nv;
     return debut;
 }
 
+
+
 Noeud *supprimerD(Noeud *debut) {
-    if (debut == NULL) return NULL;
+    if (debut == NULL) {
+        return NULL;
+    }
     if (debut->suivant == debut) {
         free(debut);
         return NULL;
     }
 
     Noeud *ptr = debut;
-    while (ptr->suivant != debut)
+    while (ptr->suivant != debut) {
         ptr = ptr->suivant;
+    }
 
     Noeud *tmp = debut;
     ptr->suivant = debut->suivant;
@@ -118,85 +139,95 @@ Noeud *supprimerD(Noeud *debut) {
     return debut;
 }
 
+
+
 Noeud *supprimerF(Noeud *debut) {
-    if (debut == NULL) return NULL;
+    if (debut == NULL) {
+        return NULL;
+    }
     if (debut->suivant == debut) {
         free(debut);
         return NULL;
     }
 
     Noeud *ptr = debut;
-    while (ptr->suivant->suivant != debut)
+    while (ptr->suivant->suivant != debut) {
         ptr = ptr->suivant;
+    }
 
     free(ptr->suivant);
     ptr->suivant = debut;
     return debut;
 }
 
+
+
 Noeud *supprimerM(Noeud *debut, int pos) {
     if (debut == NULL || pos < 1 || pos > taille(debut)) {
-        printf("Position invalide ou liste vide\n");
+        printf("Position invalide");
         return debut;
     }
-
-    if (pos == 1)
-     return supprimerD(debut);
-
+    if (pos == 1) {
+        return supprimerD(debut);
+    }
     Noeud *ptr = debut;
-    for (int i = 1; i < pos - 1; i++)
+    for (int i = 1; i < pos - 1; i++) {
         ptr = ptr->suivant;
-
+    }
     Noeud *tmp = ptr->suivant;
     ptr->suivant = tmp->suivant;
-
     if (tmp == debut) {
         debut = ptr->suivant;
     }
-
     free(tmp);
     return debut;
 }
 
+
+
 int main() {
-    Noeud *debut = NULL;
 
-    Noeud *P = cree(10);
-    Noeud *D = cree(20);
-    Noeud *T = cree(30);
+    Noeud *tete = NULL;
+    Noeud *noeud1 = cree(10);
+    Noeud *noeud2 = cree(20);
+    Noeud *noeud3 = cree(30);
 
-    printf("adresse du noeud debut : %p\n", debut);
-    printf("adresse du noeud P : %p\n", P);
-    printf("adresse du noeud D : %p\n", D);
-    printf("adresse du noeud T : %p\n", T);
+    printf("Adresse de la liste : %p", tete);
+    printf("Adresse du noeud1 : %p", noeud1);
+    printf("Adresse du noeud2 : %p", noeud2);
+    printf("Adresse du noeud3 : %p", noeud3);
 
-    debut = P;
-    P->suivant = D;
-    D->suivant = T;
-    T->suivant = debut;
+    tete = noeud1;
+    noeud1->suivant = noeud2;
+    noeud2->suivant = noeud3;
+    noeud3->suivant = tete;
 
-    printf("adresse du noeud %p\n", debut);
-    printf("adresse du noeud P suivant %p\n", P->suivant);
-    printf("adresse du noeud D suivant %p\n", D->suivant);
-    printf("adresse du noeud T suivant %p\n", T->suivant);
+    printf("Adresse de la tete : %p", tete);
+    printf("Suivant de noeud1 : %p", noeud1->suivant);
+    printf("Suivant de noeud2 : %p", noeud2->suivant);
+    printf("Suivant de noeud3 : %p", noeud3->suivant);
 
-    debut = ajouterD(debut, 40);
-    affiche(debut);
 
-    debut = ajouterF(debut, 400);
-    affiche(debut);
+    tete = ajouterD(tete, 22);
+    affiche(tete);
 
-    debut = ajouterM(debut, 3, 2400);
-    affiche(debut);
+    tete = ajouterF(tete, 6);
+    affiche(tete);
 
-    debut = supprimerD(debut);
-    affiche(debut);
+    tete = ajouterM(tete, 5, 700);
+    affiche(tete);
 
-    debut = supprimerF(debut);
-    affiche(debut);
+    tete = supprimerD(tete);
+    affiche(tete);
 
-    debut = supprimerM(debut, 3);
-    affiche(debut);
+    tete = supprimerF(tete);
+    affiche(tete);
+
+    tete = supprimerM(tete, 3);
+    affiche(tete);
+
+
+
 
     return 0;
 }
