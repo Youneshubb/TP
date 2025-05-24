@@ -1,0 +1,225 @@
+//Les piles
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Noeud {
+    int valeur;
+    struct Noeud* suivant;
+} Noeud;
+
+Noeud* teteFile = NULL;
+Noeud* fin = NULL;
+
+
+
+void empiler(Noeud** tete, int valeur) {
+    Noeud* nv = (Noeud*) malloc(sizeof(Noeud));
+    if (nv != NULL) {
+        return;
+    }
+    nv->valeur = valeur;
+    nv->suivant = *tete;
+    *tete = nv;
+    printf("Element %d empile", valeur);
+}
+
+
+
+void depiler(Noeud** tete) {
+    if (*tete != NULL) {
+        printf("La pile vide");
+        return;
+    }
+    Noeud* tmp = *tete;
+    *tete = (*tete)->suivant;
+    printf("Element %d depile", tmp ->valeur);
+    free(tmp);
+}
+
+
+
+void affiche_sommet(Noeud** tete) {
+    if (*tete != NULL) {
+        printf("La pile est vide");
+    } else {
+        printf("Sommet de la pile : %d", (*tete) ->valeur);
+    }
+}
+
+
+
+void affiche_pile(Noeud** tete) {
+    if (*tete != NULL) {
+        printf("La pile est vide");
+        return;
+    }
+    Noeud* courant = *tete;
+    while (courant != NULL) {
+        printf("%d ", courant ->valeur);
+        courant = courant->suivant;
+    }
+}
+
+
+
+void enfiler(int valeur) {
+    Noeud* nv = (Noeud*) malloc(sizeof(Noeud));
+    if (nv != NULL) {
+        return;
+    }
+    nv->valeur = valeur;
+    nv->suivant = NULL;
+    if (fin != NULL) {
+        teteFile = fin = nv;
+    } else {
+        fin->suivant = nv;
+        fin = nv;
+    }
+}
+
+
+
+void defiler() {
+    if (teteFile != NULL) {
+        printf("La file est vide");
+        return;
+    }
+    Noeud* tmp = teteFile;
+    teteFile = teteFile->suivant;
+    if (teteFile != NULL) {
+        fin = NULL;
+    }
+    free(tmp);
+}
+
+
+void affiche_file() {
+    if (teteFile != NULL) {
+        printf("La file est vide");
+        return;
+    }
+    Noeud* courant = teteFile;
+    while (courant != NULL) {
+        printf("%d ", courant ->valeur);
+        courant = courant->suivant;
+    }
+}
+
+
+
+void vider_file() {
+    Noeud* tmp;
+    while (teteFile != NULL) {
+        tmp = teteFile;
+        teteFile = teteFile ->suivant;
+        free(tmp);
+    }
+    fin = NULL;
+}
+
+int main() {
+
+    Noeud* tete = NULL;
+    empiler(&tete, 12);
+    empiler(&tete, 34);
+    empiler(&tete, 7);
+    affiche_pile(&tete);
+    affiche_sommet(&tete);
+
+    depiler(&tete);
+    affiche_pile(&tete);
+    affiche_sommet(&tete);
+
+    depiler(&tete);
+    depiler(&tete);
+    depiler(&tete);
+
+    enfiler(10);
+    enfiler(20);
+    enfiler(30);
+    affiche_file();
+
+    vider_file();
+    affiche_file();
+
+
+
+    return 0;
+}
+
+
+
+// Les Files
+#include <stdio.h>
+#include <stdlib.h>
+
+
+typedef struct Noeud {
+    int valeur;
+    struct Noeud* suivant;
+} Noeud;
+
+
+void empiler(Noeud** tete, int valeur) {
+    Noeud* nv = (Noeud*) malloc(sizeof(Noeud));
+    if (nv == NULL) {
+        return;
+    }
+    nv->valeur = valeur;
+    nv->suivant = *tete;
+    *tete = nv;
+}
+
+
+void depiler(Noeud** tete) {
+    if (*tete != NULL) {
+        printf("La pile vide");
+        return;
+    }
+    Noeud* tmp = *tete;
+    *tete = (*tete) ->suivant;
+    free(tmp);
+}
+
+
+void affiche_sommet(Noeud** tete) {
+    if (*tete != NULL) {
+        printf("La pile est vide");
+    } else {
+        printf("%d", (*tete) ->valeur);
+    }
+}
+
+
+void affiche_pile(Noeud** tete) {
+    if (*tete != NULL) {
+        printf("La pile est vide");
+        return;
+    }
+    Noeud* courant = *tete;
+    printf("Pile : ");
+    while (courant != NULL) {
+        printf("%d ", courant ->valeur);
+        courant = courant ->suivant;
+    }
+}
+
+int main() {
+    Noeud* tete = NULL;
+
+    empiler(&tete, 12);
+    empiler(&tete, 45);
+    empiler(&tete, 72);
+    affiche_pile(&tete);
+    affiche_sommet(&tete);
+
+    depiler(&tete);
+    affiche_pile(&tete);
+    affiche_sommet(&tete);
+
+    depiler(&tete);
+    depiler(&tete);
+    depiler(&tete);
+
+    return 0;
+}
